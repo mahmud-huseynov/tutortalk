@@ -1,0 +1,22 @@
+databaseType = "MySql"
+name = "application"
+id = "378ff317-7e7f-419e-a82b-6ad92f0da972"
+
+[environments.sample]
+url = "jdbc:mysql://localhost:3307/tutortalk_db"
+user = "${env.DB_USERNAME}"
+password = "${env.DB_PASSWORD}"
+
+[flywayDesktop]
+developmentEnvironment = "development"
+shadowEnvironment = "shadow"
+schemaModel = "schema-model"
+enableMigrations = true
+
+[flyway]
+
+[redgateCompare]
+filterFile = "filter.rgf"
+
+[redgateCompare.mysql.options.ignores]
+ignoreNewlinesInTextObjects = "off"

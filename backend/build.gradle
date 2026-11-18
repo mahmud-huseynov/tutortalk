@@ -1,0 +1,89 @@
+plugins {
+    id 'org.springframework.boot' version '3.1.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+    id "org.sonarqube" version "4.4.1.3373"
+    id 'jacoco'
+    id "org.flywaydb.flyway" version "8.2.0"
+}
+
+group = 'nl.fontys.s3'
+version = '1.0-SNAPSHOT'
+
+sonar {
+    properties {
+        property 'sonar.host.url', 'http://localhost:9000'
+        property 'sonar.token', System.getenv('SONAR_TOKEN') ?: ''
+        property "sonar.projectKey", "TutorTalk"
+        property "sonar.projectName", "TutorTalk"
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
+}
+
+test {
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect { file ->
+            fileTree(dir: file, exclude: [
+                    "nl/fontys/s3/domain/**",
+                    "nl/fontys/s3/persistence/**",
+            ])
+        }))
+    }
+}
+
+
+
+repositories {
+    mavenCentral()
+}
+
+flyway {
+    url = System.getenv('DB_URL') ?: 'jdbc:mysql://localhost:3307/tutortalk_db'
+    user = System.getenv('DB_USERNAME') ?: 'tutortalk'
+    password = System.getenv('DB_PASSWORD') ?: ''
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.security:spring-security-messaging'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-mysql'
+    implementation 'com.mysql:mysql-connector-j:8.3.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'uk.org.webcompere:system-stubs-jupiter:2.1.6'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation "org.mockito:mockito-core:3.+"
+    testRuntimeOnly 'com.h2database:h2'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        exceptionFormat = 'full'
+    }
+}

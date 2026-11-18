@@ -1,0 +1,18 @@
+package nl.fontys.s3.domain.tutor;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Tutor {
+    private Long id;
+    private String name;
+    private String email;
+    private String number;
+    private String languages;
+}

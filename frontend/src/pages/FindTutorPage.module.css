@@ -1,0 +1,42 @@
+.container {
+  background-color: #fffcef;
+}
+
+.header {
+  padding: 10px;
+}
+
+.header h1, .header p {
+  margin-left: 10%;
+  text-align: left;
+  margin-top: 0;
+}
+
+
+.tutorList {
+  border-radius: 20px;
+  width: 50%;
+  margin: 30px 0 10px 50px;
+  background-color: #fff;
+  padding: 15px;
+  text-align: left;
+}
+
+.tutorList h2 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 5px;
+}
+
+.tutorList p {
+  color: #666;
+  font-size: 14px;
+}
+
+.tutorList a {
+  text-decoration: none;
+}
+
+.tutorList ul {
+  list-style-type: none;
+}

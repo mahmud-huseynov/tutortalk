@@ -1,0 +1,74 @@
+.header {
+    padding: 20px 17%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    width: 65%; 
+    background-color: #fffcef;
+}
+
+.headerContent {
+    display: flex;
+    align-items: center;
+}
+
+h1 {
+    font-size: 50px;
+    margin-right: 20px;
+    white-space: normal; 
+}
+
+
+
+.exploreLanguages {
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center; 
+}
+
+.headerImage {
+    max-width: 100%;
+    height: auto;
+}
+
+.languageList {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.languageItem {
+    background-color: #FF7043;
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 5px;
+    font-size: 20px;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+}
+
+
+@media screen and (max-width: 768px) {
+    .headerContent {
+        flex-direction: column;
+        align-items: center; 
+        justify-content: center; 
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .headerImage {
+        max-width: 100%; 
+    }
+}

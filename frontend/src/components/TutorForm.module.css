@@ -1,0 +1,68 @@
+/* src/components/TutorForm.module.css */
+.section {
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.input {
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 200px;
+}
+
+.dropdownContainer {
+    position: relative;
+    width: 100%;
+}
+
+.dropdown {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #333;
+    font-size: 16px;
+    outline: none;
+}
+
+.dropdown:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px #007bff;
+}
+
+.dropdownOption {
+    padding: 8px;
+}
+
+.dropdownOption:checked {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.buttonContainer {
+    display: flex;
+    justify-content: center; /* Center the button */
+}
+
+button {
+    padding: 9px 25px;
+    margin: 5px;
+    cursor: pointer;
+    border: 2px solid #FF7043;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
+    transition: all 0.5s ease 0s;
+}
+
+button:hover {
+    background-color: #FF7043;
+    color: white;
+    border-color: #FF7043;
+}
