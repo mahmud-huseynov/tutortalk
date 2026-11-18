@@ -4,11 +4,11 @@ package nl.fontys.s3.configuration.db;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import nl.fontys.s3.business.exception.InvalidAdminException;
-import nl.fontys.s3.business.tutor.CreateTutorUseCase;
-import nl.fontys.s3.domain.tutor.CreateTutorRequest;
 import nl.fontys.s3.persistence.LanguageRepository;
+import nl.fontys.s3.persistence.TutorRepository;
 import nl.fontys.s3.persistence.UserRepository;
 import nl.fontys.s3.persistence.entity.LanguageEntity;
+import nl.fontys.s3.persistence.entity.TutorEntity;
 import nl.fontys.s3.persistence.security.RoleEnum;
 import nl.fontys.s3.persistence.entity.UserEntity;
 import nl.fontys.s3.persistence.entity.UserRoleEntity;
@@ -17,7 +17,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 @Component
@@ -27,7 +27,7 @@ public class DatabaseDummyDataInitializer {
     private LanguageRepository languageRepository;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    private CreateTutorUseCase createTutorUseCase;
+    private TutorRepository tutorRepository;
 
     @EventListener(ApplicationReadyEvent.class)
     @Transactional
@@ -60,12 +60,16 @@ public class DatabaseDummyDataInitializer {
 
 
     void insertStudent() {
-        Long languageId = 1L;
-        CreateTutorRequest createTutorRequest = CreateTutorRequest.builder()
+        // A tutor needs a name, email and number (see TutorEntity), so the demo tutor is saved complete.
+        Set<LanguageEntity> languages = new HashSet<>();
+        languageRepository.findById(1L).ifPresent(languages::add);
+        TutorEntity tutor = TutorEntity.builder()
                 .name("Linda")
-                .languageIds(Collections.singletonList(languageId))
+                .email("linda@example.com")
+                .number("0600000000")
+                .languages(languages)
                 .build();
-        createTutorUseCase.createTutor(createTutorRequest);
+        tutorRepository.save(tutor);
     }
 
     void insertSomeCountries() {

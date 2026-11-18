@@ -1,11 +1,10 @@
 package nl.fontys.s3.configuration.db;
 
-import nl.fontys.s3.business.tutor.CreateTutorUseCase;
-import nl.fontys.s3.domain.tutor.CreateTutorRequest;
-import nl.fontys.s3.domain.tutor.CreateTutorResponse;
 import nl.fontys.s3.persistence.LanguageRepository;
+import nl.fontys.s3.persistence.TutorRepository;
 import nl.fontys.s3.persistence.UserRepository;
 import nl.fontys.s3.persistence.entity.LanguageEntity;
+import nl.fontys.s3.persistence.entity.TutorEntity;
 import nl.fontys.s3.persistence.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +35,7 @@ class DatabaseDummyDataInitializerTest {
     private PasswordEncoder passwordEncoder;
 
     @Mock
-    private CreateTutorUseCase createTutorUseCase;
+    private TutorRepository tutorRepository;
 
     @InjectMocks
     private DatabaseDummyDataInitializer initializer;
@@ -59,7 +58,7 @@ class DatabaseDummyDataInitializerTest {
         verify(languageRepository, times(1)).count();
         verify(languageRepository, times(5)).save(any(LanguageEntity.class));
         verify(userRepository, times(1)).save(any(UserEntity.class));
-        verify(createTutorUseCase, times(1)).createTutor(any(CreateTutorRequest.class));
+        verify(tutorRepository, times(1)).save(any(TutorEntity.class));
     }
 
     @Test
@@ -71,7 +70,7 @@ class DatabaseDummyDataInitializerTest {
         verify(languageRepository, times(1)).count();
         verify(languageRepository, never()).save(any(LanguageEntity.class));
         verify(userRepository, never()).save(any(UserEntity.class));
-        verify(createTutorUseCase, never()).createTutor(any(CreateTutorRequest.class));
+        verify(tutorRepository, never()).save(any(TutorEntity.class));
     }
 
     @Test
@@ -85,11 +84,9 @@ class DatabaseDummyDataInitializerTest {
 
     @Test
     void testInsertStudent() {
-        CreateTutorResponse mockResponse = mock(CreateTutorResponse.class);
-        when(createTutorUseCase.createTutor(any(CreateTutorRequest.class))).thenReturn(mockResponse);
         initializer.insertStudent();
 
-        verify(createTutorUseCase, times(1)).createTutor(any(CreateTutorRequest.class));
+        verify(tutorRepository, times(1)).save(any(TutorEntity.class));
     }
 
     @Test
