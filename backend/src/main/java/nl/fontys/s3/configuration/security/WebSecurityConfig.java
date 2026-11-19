@@ -33,9 +33,10 @@ public class WebSecurityConfig {
                         configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(registry ->
                         registry.requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                                .requestMatchers(HttpMethod.GET, "/languages", "/messages/all", "/user-roles/**", "/users/**").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/refresh_tokens/validate", "/refresh_tokens/refresh", "/tokens", "/signup/tutor", "/signup/learner", "/messages/save" ).permitAll()
+                                .requestMatchers(HttpMethod.GET, "/languages", "/user-roles/**", "/users/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/refresh_tokens/validate", "/refresh_tokens/refresh", "/tokens", "/signup/tutor", "/signup/learner").permitAll()
                                 .requestMatchers("/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+                                // WebSocket handshake only; the JWT is checked on the STOMP CONNECT frame (WebSocketAuthInterceptor)
                                 .requestMatchers("/ws/**").permitAll()
                                 .anyRequest().authenticated()
                 )

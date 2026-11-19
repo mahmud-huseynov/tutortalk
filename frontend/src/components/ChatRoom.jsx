@@ -9,6 +9,8 @@ import UserRoleApi from '../api/UserRoleApi';
 
 let stompClient = null;
 
+const authHeader = () => ({ Authorization: `Bearer ${TokenManager.getAccessToken()}` });
+
 const ChatRoom = () => {
     const location = useLocation();
     const navigate = useNavigate();
@@ -38,7 +40,8 @@ const ChatRoom = () => {
     const connect = () => {
         let Sock = new SockJS('http://localhost:8080/ws');
         stompClient = over(Sock);
-        stompClient.connect({}, onConnected, onError);
+        // The back end checks this JWT on the STOMP CONNECT frame.
+        stompClient.connect(authHeader(), onConnected, onError);
     };
 
     const fetchUserIdAndRole = () => {
@@ -73,11 +76,8 @@ const ChatRoom = () => {
     
 
     const fetchMessages = () => {
-        axios.get('http://localhost:8080/messages/all', {
-            params: {
-                username: userData.username
-            }
-        })
+        // The back end returns only the logged-in user's conversations.
+        axios.get('http://localhost:8080/messages/all', { headers: authHeader() })
             .then(response => {
                 const allMessages = response.data;
 
@@ -164,7 +164,7 @@ const ChatRoom = () => {
                 date: currentDate.toISOString()
             };
 
-            axios.post('http://localhost:8080/messages/save', chatMessage)
+            axios.post('http://localhost:8080/messages/save', chatMessage, { headers: authHeader() })
                 .then(response => {
                     console.log("Private message saved successfully:", response.data);
 

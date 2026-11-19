@@ -15,6 +15,7 @@ frontend/   React single-page app (Vite)
 - **Authentication:** Spring Security with JWT access tokens (valid for 30 minutes) and refresh tokens stored in the database. The front end keeps the tokens, refreshes the access token and guards its routes by role.
 - **Management:** the admin dashboard creates, reads, updates and deletes tutors, learners and languages, and shows a learner count.
 - **Real-time chat:** WebSockets with STOMP over SockJS. The back end offers a public chat room and private messages between users; the chat page in the front end is built around the private messages. Messages are saved, so the history can be loaded again.
+- **Chat security (added November 2026):** the STOMP CONNECT frame must carry a valid JWT, the sender of a message is taken from that token, and users can only read and subscribe to their own conversations.
 - **API documentation:** OpenAPI / Swagger UI.
 
 ### Back-end endpoints
@@ -26,7 +27,7 @@ frontend/   React single-page app (Vite)
 | Tutors    | `GET /tutors`, `GET /tutors/{id}`, `POST /tutors`, `PUT /tutors/{id}`, `DELETE /tutors/{id}` |
 | Learners  | `GET /learners`, `GET /learners/{id}`, `GET /learners/count`, `POST /learners`, `PUT /learners/{id}`, `DELETE /learners/{id}` |
 | Languages | `GET /languages`, `GET /languages/{id}`, `POST /languages`, `PUT /languages/{id}`, `DELETE /languages/{id}` |
-| Chat      | WebSocket endpoint `/ws`; send to `/app/message` (broadcast on `/chatroom/public`) or `/app/private-message` (delivered on `/user/{username}/private`); history via `POST /messages/save` and `GET /messages/all` |
+| Chat      | WebSocket endpoint `/ws`, with `Authorization: Bearer <access token>` in the STOMP CONNECT frame; send to `/app/message` (broadcast on `/chatroom/public`) or `/app/private-message` (delivered on `/user/{username}/private`, which only that user may subscribe to); history via `POST /messages/save` and `GET /messages/all`, both for the logged-in user only |
 
 While the back end runs, the full API documentation is at <http://localhost:8080/swagger-ui/index.html>.
 
@@ -118,12 +119,12 @@ The front end calls the API on `http://localhost:8080`, and the back end only ac
 
 ```bash
 cd backend
-./gradlew test                 # 42 test classes; also writes the JaCoCo coverage report
+./gradlew test                 # 145 tests in 43 test classes; also writes the JaCoCo coverage report
 SONAR_TOKEN=<token> ./gradlew sonar   # analysis on a SonarQube server at http://localhost:9000
 ```
 
 - Unit tests for the tutor, learner, language and auth use cases, the converters and the exceptions (JUnit 5 + Mockito).
-- Controller tests, security tests (token encoding and decoding, the authentication filter, the 401 entry point) and a test for the global exception handler.
+- Controller tests, security tests (token encoding and decoding, the authentication filter, the 401 entry point, the WebSocket token check) and a test for the global exception handler.
 - Repository tests against an in-memory H2 database, so no MySQL server is needed for the tests.
 - The coverage report (`build/reports/jacoco/test/html/index.html`) leaves out the `domain` and `persistence` packages, because they hold data classes without logic. That way the report focuses on the code with logic in it.
 

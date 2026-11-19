@@ -9,8 +9,13 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
+/**
+ * Chat over REST (history) and STOMP (live messages). The sender of a message is always
+ * the authenticated user, never a name the client puts in the payload.
+ */
 @RestController
 @RequestMapping("/messages")
 public class ChatController {
@@ -25,24 +30,29 @@ public class ChatController {
     }
 
     @PostMapping("/save")
-    public void saveMessage(@RequestBody ChatMessage message) {
+    public void saveMessage(@RequestBody ChatMessage message, Principal principal) {
+        message.setSenderName(principal.getName());
         chatMessageRepository.save(message);
     }
 
     @MessageMapping("/message")
     @SendTo("/chatroom/public")
-    public ChatMessage receiveMessage(@Payload ChatMessage message) {
+    public ChatMessage receiveMessage(@Payload ChatMessage message, Principal principal) {
+        message.setSenderName(principal.getName());
         return message;
     }
 
     @MessageMapping("/private-message")
-    public ChatMessage recMessage(@Payload ChatMessage message) {
+    public ChatMessage recMessage(@Payload ChatMessage message, Principal principal) {
+        message.setSenderName(principal.getName());
         simpMessagingTemplate.convertAndSendToUser(message.getReceiverName(), "/private", message);
         return message;
     }
 
+    /** Returns only the conversations of the logged-in user. */
     @GetMapping("/all")
-    public List<ChatMessage> getAllMessages(@RequestParam(name = "username") String username) {
+    public List<ChatMessage> getAllMessages(Principal principal) {
+        String username = principal.getName();
         return chatMessageRepository.findBySenderNameOrReceiverName(username, username);
     }
 }
